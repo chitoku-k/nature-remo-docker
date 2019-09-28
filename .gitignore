@@ -1,0 +1,5 @@
+client/natureremo-cli
+
+homebridge/config.json
+homebridge/persist/
+homebridge/accessories/
