@@ -12,7 +12,7 @@ $ docker-compose up -d
 To utilize the helper:
 
 ```bash
-$ docker-compose run --rm sh
+$ docker-compose run --rm client sh
 ~ # remo get 192.0.2.1 > data.json
 ~ # remo put 192.0.2.1 < data.json
 ```
