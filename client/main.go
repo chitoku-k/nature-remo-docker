@@ -22,7 +22,7 @@ func main() {
 
 	status, err := c.Run()
 	if err != nil {
-		os.Stderr.WriteString(fmt.Sprintf("Error: %s\n", err.Error()))
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 	}
 
 	os.Exit(status)
