@@ -27,7 +27,7 @@ func (c *getCommand) Synopsis() string {
 
 func (c *getCommand) Run(args []string) int {
 	if len(args) != 1 {
-		os.Stdout.WriteString(fmt.Sprintln(c.Help()))
+		fmt.Fprintln(os.Stdout, c.Help())
 		return 1
 	}
 
@@ -35,16 +35,15 @@ func (c *getCommand) Run(args []string) int {
 	client := natureremo.NewLocalClient(hostname)
 	result, err := client.Fetch(context.Background())
 	if err != nil {
-		os.Stderr.WriteString(fmt.Sprintf("Error: %s\n", err.Error()))
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		return 2
 	}
 
-	value, err := json.Marshal(*result)
+	err = json.NewEncoder(os.Stdout).Encode(*result)
 	if err != nil {
-		os.Stderr.WriteString(fmt.Sprintf("Error: %s\n", err.Error()))
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		return 2
 	}
 
-	os.Stdout.WriteString(fmt.Sprintf("%s\n", value))
 	return 0
 }

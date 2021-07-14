@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/mitchellh/cli"
@@ -28,31 +27,26 @@ func (c *putCommand) Synopsis() string {
 
 func (c *putCommand) Run(args []string) int {
 	if len(args) != 1 {
-		os.Stdout.WriteString(fmt.Sprintln(c.Help()))
+		fmt.Fprintln(os.Stdout, c.Help())
 		return 1
 	}
 
 	hostname := args[0]
-	data, err := ioutil.ReadAll(os.Stdin)
-	if err != nil {
-		os.Stderr.WriteString(fmt.Sprintf("Error: %s\n", err.Error()))
-		return 2
-	}
 
 	var signal *natureremo.IRSignal
-	err = json.Unmarshal(data, &signal)
+	err := json.NewDecoder(os.Stdin).Decode(&signal)
 	if err != nil {
-		os.Stderr.WriteString(fmt.Sprintf("Error: %s\n", err.Error()))
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		return 2
 	}
 
 	client := natureremo.NewLocalClient(hostname)
 	err = client.Emit(context.Background(), signal)
 	if err != nil {
-		os.Stderr.WriteString(fmt.Sprintf("Error: %s\n", err.Error()))
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		return 2
 	}
 
-	os.Stderr.WriteString("Successfully sent!\n")
+	fmt.Fprintln(os.Stderr, "Successfully sent!")
 	return 0
 }
